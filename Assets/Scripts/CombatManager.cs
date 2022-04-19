@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum combatState {ENEMY, ALLY, IDLE, WON, LOST}
+
 public class CombatManager : MonoBehaviour
 {
+    public combatState state;
     public GameObject mons1;
     public GameObject mons2;
     private List<GameObject> enemyMonsters = new List<GameObject>();
@@ -15,10 +18,7 @@ public class CombatManager : MonoBehaviour
     public Transform enemyMonsterFrontTransform;
     public Transform enemyMonsterMidTransform;
     public Transform enemyMonsterBackTransform;
-
-    void Awake(){
-        DontDestroyOnLoad(gameObject);
-    }
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -28,70 +28,94 @@ public class CombatManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(state == combatState.IDLE)
+        {
+            List<GameObject> allyMonstersToGo = new List<GameObject>();
+            List<GameObject> enemyMonstersToGo = new List<GameObject>();
+            foreach (GameObject monster in allyMonsters)
+            {
+                bool worked = monster.GetComponent<Monster>().AddToSpeedSlider(0.25f);
+                if (worked)
+                {
+                    allyMonstersToGo.Add(monster);
+                }
+            }
+            foreach(GameObject monster in enemyMonsters)
+            {
+                bool worked = monster.GetComponent<Monster>().AddToSpeedSlider(0.25f);
+                if (worked)
+                {
+                    enemyMonstersToGo.Add(monster);
+                }
+            }
+            if (allyMonstersToGo.Count > 0)
+            {
+                foreach(GameObject monster in allyMonstersToGo)
+                {
+                    if (state == combatState.IDLE)
+                    {
+                        StartCoroutine(StartAllyTurn(monster));
+                    }
+                }
+            }
+            if (enemyMonstersToGo.Count > 0)
+            {
+                foreach (GameObject monster in enemyMonstersToGo)
+                {
+                    if(state == combatState.IDLE)
+                    {
+                        StartCoroutine(StartEnemyTurn(monster));
+                    }
+                }
+            }
+        }
     }
 
     public void StartBattle(GameObject allyMonsterBack, GameObject allyMonsterMid, GameObject allyMonsterFront, GameObject enemyMonsterBack, GameObject enemyMonsterMid, GameObject enemyMonsterFront){
-        GameObject monsterToGo = null;
-        int lowestSpeed = 1000;
         if(allyMonsterFront != null){
             allyMonsters.Add(allyMonsterFront);
             allyMonsterFront.transform.position = allyMonsterFrontTransform.position;
-            if(allyMonsterFront.GetComponent<Monster>().maxSpeed < lowestSpeed){
-                monsterToGo = allyMonsterFront;
-                lowestSpeed = monsterToGo.GetComponent<Monster>().maxSpeed;
-            }
+            allyMonsterFront.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(allyMonsterMid != null){
             allyMonsters.Add(allyMonsterMid);
             allyMonsterMid.transform.position = allyMonsterMidTransform.position;
-            if(allyMonsterMid.GetComponent<Monster>().maxSpeed < lowestSpeed){
-                monsterToGo = allyMonsterMid;
-                lowestSpeed = monsterToGo.GetComponent<Monster>().maxSpeed;
-            }
+            allyMonsterMid.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(allyMonsterBack != null){
             allyMonsters.Add(allyMonsterBack);
             allyMonsterBack.transform.position = allyMonsterBackTransform.position;
-            if(allyMonsterBack.GetComponent<Monster>().maxSpeed < lowestSpeed){
-                monsterToGo = allyMonsterBack;
-                lowestSpeed = monsterToGo.GetComponent<Monster>().maxSpeed;
-            }
+            allyMonsterBack.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(enemyMonsterFront != null){
             enemyMonsters.Add(enemyMonsterFront);
             enemyMonsterFront.transform.position = enemyMonsterFrontTransform.position;
-            if(enemyMonsterFront.GetComponent<Monster>().maxSpeed < lowestSpeed){
-                monsterToGo = enemyMonsterFront;
-                lowestSpeed = monsterToGo.GetComponent<Monster>().maxSpeed;
-            }
+            enemyMonsterFront.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(enemyMonsterMid != null){
             enemyMonsters.Add(enemyMonsterMid);
             enemyMonsterMid.transform.position = enemyMonsterMidTransform.position;
-            if(enemyMonsterMid.GetComponent<Monster>().maxSpeed < lowestSpeed){
-                monsterToGo = enemyMonsterMid;
-                lowestSpeed = monsterToGo.GetComponent<Monster>().maxSpeed;
-            }
+            enemyMonsterMid.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(enemyMonsterBack != null){
             enemyMonsters.Add(enemyMonsterBack);
             enemyMonsterBack.transform.position = enemyMonsterBackTransform.position;
-            if(enemyMonsterBack.GetComponent<Monster>().maxSpeed < lowestSpeed){
-                monsterToGo = enemyMonsterBack;
-                lowestSpeed = monsterToGo.GetComponent<Monster>().maxSpeed;
-            }
+            enemyMonsterBack.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
-        StartTurn(monsterToGo);
+        state = combatState.IDLE;
     }
 
-    public void StartTurn(GameObject currentMonster){
-        foreach(GameObject monster in enemyMonsters){
-            monster.GetComponent<Monster>().decreaseSpeed(currentMonster.GetComponent<Monster>().currentSpeed);
-        }
-        foreach(GameObject monster in allyMonsters){
-            monster.GetComponent<Monster>().decreaseSpeed(currentMonster.GetComponent<Monster>().currentSpeed);
-        }
-        currentMonster.GetComponent<Monster>().resetSpeed();
+    public IEnumerator StartAllyTurn(GameObject currentMonster){
+        state = combatState.ALLY;
+        currentMonster.GetComponent<Monster>().SetSpeedSliderValue(0 + (100 - currentMonster.GetComponent<Monster>().GetSpeedSliderValue()));
+        yield return new WaitForSeconds(2);
+        state = combatState.IDLE;
+    }
+    public IEnumerator StartEnemyTurn(GameObject currentMonster)
+    {
+        state = combatState.ENEMY;
+        currentMonster.GetComponent<Monster>().SetSpeedSliderValue(0 + (100 - currentMonster.GetComponent<Monster>().GetSpeedSliderValue()));
+        yield return new WaitForSeconds(2);
+        state = combatState.IDLE;
     }
 }

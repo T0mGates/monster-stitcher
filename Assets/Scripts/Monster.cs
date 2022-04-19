@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Monster : MonoBehaviour
 {
@@ -22,10 +23,19 @@ public class Monster : MonoBehaviour
     private int currentLuck;
     private int maxHealth;
     private int currentHealth;
+    private int currentMana;
+    private int maxMana;
+    public Slider hpSlider;
+    public Slider manaSlider;
+    public Slider speedSlider;
+    public Transform UIStartPos;
     // Start is called before the first frame update
     void Start()
     {
-        updateStats();
+        ResetStats();
+        hpSlider.transform.position = UIStartPos.position;
+        manaSlider.transform.position = UIStartPos.position + new Vector3(0, -0.25f, 0);
+        speedSlider.transform.position = UIStartPos.position + new Vector3(0, -0.75f, 0);
     }
 
     // Update is called once per frame
@@ -34,14 +44,12 @@ public class Monster : MonoBehaviour
         
     }
 
-    public void decreaseSpeed(int amount){
+    public void DecreaseSpeed(int amount){
         currentSpeed -= amount;
-    }
-    public void resetSpeed(){
-        currentSpeed = maxSpeed;
+        UpdateStatBars();
     }
 
-    public void updateStats(){
+    public void ResetStats(){
         foreach(Bodypart bodypart in GetComponentsInChildren<Bodypart>()){
             maxMagic += bodypart.magicBuff;
             maxMagicPen += bodypart.magicPenBuff;
@@ -52,6 +60,7 @@ public class Monster : MonoBehaviour
             maxSpeed += bodypart.speedBuff;
             maxLuck += bodypart.luckBuff;
             maxHealth += bodypart.healthBuff;
+            maxMana += bodypart.manaBuff;
         }
         currentArmor = maxArmor;
         currentMagic = maxMagic;
@@ -62,5 +71,31 @@ public class Monster : MonoBehaviour
         currentSpeed = maxSpeed;
         currentLuck = maxLuck;
         currentHealth = maxHealth;
+        currentMana = maxMana;
+        UpdateStatBars();
+    }
+
+    public bool AddToSpeedSlider(float amount)
+    {
+        float multiplier = 1 + (currentSpeed / 100); 
+        speedSlider.value += (amount * multiplier);
+        return speedSlider.value >= speedSlider.maxValue;
+    }
+
+    public void SetSpeedSliderValue(float value)
+    {
+        speedSlider.value = value;
+    }
+
+    public void UpdateStatBars(){
+        hpSlider.maxValue = maxHealth;
+        hpSlider.value = currentHealth;
+        manaSlider.maxValue = maxMana;
+        manaSlider.value = currentMana;
+    }
+
+    public float GetSpeedSliderValue()
+    {
+        return speedSlider.value;
     }
 }

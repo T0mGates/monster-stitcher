@@ -9,21 +9,22 @@ public class Bodypart : MonoBehaviour
     public string infoText;
     public GameObject uiObject;
     private bool hovering = false;
-public TextMeshProUGUI uiInfoText;
-public int magicBuff = 0;
-public int magicPenBuff = 0;
-public int attackBuff = 0;
-public int attackPenBuff = 0;
-public int armorBuff = 0;
-public int magicArmorBuff = 0;
-public int speedBuff = 0;
-public int luckBuff = 0;
-public int healthBuff = 0;
-public int currentExp = 0;
-public int expToNextLevel = 5;
-public int level = 1;
-public int levelToEvolve;
-public GameObject nextEvolve;
+    public TextMeshProUGUI uiInfoText;
+    public int manaBuff = 0;
+    public int magicBuff = 0;
+    public int magicPenBuff = 0;
+    public int attackBuff = 0;
+    public int attackPenBuff = 0;
+    public int armorBuff = 0;
+    public int magicArmorBuff = 0;
+    public int speedBuff = 0;
+    public int luckBuff = 0;
+    public int healthBuff = 0;
+    public int currentExp = 0;
+    public int expToNextLevel = 5;
+    public int level = 1;
+    public int levelToEvolve;
+    public GameObject nextEvolve;
     // Start is called before the first frame update
     void Start()
     {       
