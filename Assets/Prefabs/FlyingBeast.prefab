@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 72630205}
   - component: {fileID: 72630206}
   m_Layer: 5
-  m_Name: Manabar
+  m_Name: Energybar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -478,9 +478,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 10
-  m_WholeNumbers: 1
-  m_Value: 10
+  m_MaxValue: 100
+  m_WholeNumbers: 0
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -619,7 +619,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -953,10 +953,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b7b40b71a0b41a0b384943c1038438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoText: 'Bat''s Arm: Claw at your enemy.'
+  energyCost: 1
+  type: Demon
+  numTargets: 1
+  nameOfPart: Bat Wing
+  attackMinValue: 1
+  attackMaxValue: 3
+  accuracyPercent: 100
+  extraCritPercent: 0
+  infoText: 1 target, 1 click.
   uiObject: {fileID: 0}
   uiInfoText: {fileID: 0}
-  manaBuff: 0
+  uiDamageText: {fileID: 0}
+  uiAccuracyText: {fileID: 0}
+  uiEnergyCostText: {fileID: 0}
+  uiPhysOrMagicText: {fileID: 0}
+  uiTypeText: {fileID: 0}
+  energyBuff: 0
   magicBuff: 0
   magicPenBuff: 0
   attackBuff: 0
@@ -971,6 +984,12 @@ MonoBehaviour:
   level: 1
   levelToEvolve: 0
   nextEvolve: {fileID: 0}
+  targetEnemy: 1
+  targetAlly: 0
+  maxIndexToHit: 0
+  clickMoreThanOnce: 0
+  isPhysical: 1
+  isMagical: 0
 --- !u!70 &3312446496379351868
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1164,10 +1183,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b7b40b71a0b41a0b384943c1038438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoText: 'Bat''s Arm: Claw at your enemy.'
+  energyCost: 5
+  type: Demon
+  numTargets: 2
+  nameOfPart: Bat Wing
+  attackMinValue: 1
+  attackMaxValue: 3
+  accuracyPercent: 100
+  extraCritPercent: 0
+  infoText: Hit front two, 1 click.
   uiObject: {fileID: 0}
   uiInfoText: {fileID: 0}
-  manaBuff: 0
+  uiDamageText: {fileID: 0}
+  uiAccuracyText: {fileID: 0}
+  uiEnergyCostText: {fileID: 0}
+  uiPhysOrMagicText: {fileID: 0}
+  uiTypeText: {fileID: 0}
+  energyBuff: 0
   magicBuff: 0
   magicPenBuff: 0
   attackBuff: 0
@@ -1182,6 +1214,12 @@ MonoBehaviour:
   level: 1
   levelToEvolve: 0
   nextEvolve: {fileID: 0}
+  targetEnemy: 1
+  targetAlly: 0
+  maxIndexToHit: 1
+  clickMoreThanOnce: 0
+  isPhysical: 0
+  isMagical: 1
 --- !u!70 &3670488123651870276
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1291,10 +1329,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b7b40b71a0b41a0b384943c1038438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoText: Okokok
+  energyCost: 5
+  type: Demon
+  numTargets: 3
+  nameOfPart: Bat Leg
+  attackMinValue: 1
+  attackMaxValue: 1
+  accuracyPercent: 100
+  extraCritPercent: 0
+  infoText: Hit 3 enemies
   uiObject: {fileID: 0}
   uiInfoText: {fileID: 0}
-  manaBuff: 0
+  uiDamageText: {fileID: 0}
+  uiAccuracyText: {fileID: 0}
+  uiEnergyCostText: {fileID: 0}
+  uiPhysOrMagicText: {fileID: 0}
+  uiTypeText: {fileID: 0}
+  energyBuff: 0
   magicBuff: 0
   magicPenBuff: 0
   attackBuff: 3
@@ -1309,6 +1360,12 @@ MonoBehaviour:
   level: 1
   levelToEvolve: 0
   nextEvolve: {fileID: 0}
+  targetEnemy: 1
+  targetAlly: 0
+  maxIndexToHit: 2
+  clickMoreThanOnce: 0
+  isPhysical: 1
+  isMagical: 0
 --- !u!61 &5566554750586245901
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1389,9 +1446,10 @@ MonoBehaviour:
   currentSpeed: 0
   maxSpeed: 0
   hpSlider: {fileID: 1878590444}
-  manaSlider: {fileID: 72630206}
+  energySlider: {fileID: 72630206}
   speedSlider: {fileID: 1003658560}
   UIStartPos: {fileID: 4845048718939788878}
+  types: []
 --- !u!1 &7703928875289892243
 GameObject:
   m_ObjectHideFlags: 0
@@ -1713,10 +1771,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b7b40b71a0b41a0b384943c1038438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoText: Body yeye
+  energyCost: 10
+  type: Demon
+  numTargets: 1
+  nameOfPart: Bat Body
+  attackMinValue: 1
+  attackMaxValue: 3
+  accuracyPercent: 100
+  extraCritPercent: 0
+  infoText: Hit any 1 enemy
   uiObject: {fileID: 0}
   uiInfoText: {fileID: 0}
-  manaBuff: 5
+  uiDamageText: {fileID: 0}
+  uiAccuracyText: {fileID: 0}
+  uiEnergyCostText: {fileID: 0}
+  uiPhysOrMagicText: {fileID: 0}
+  uiTypeText: {fileID: 0}
+  energyBuff: 7
   magicBuff: 0
   magicPenBuff: 0
   attackBuff: 3
@@ -1731,6 +1802,12 @@ MonoBehaviour:
   level: 1
   levelToEvolve: 0
   nextEvolve: {fileID: 0}
+  targetEnemy: 1
+  targetAlly: 0
+  maxIndexToHit: 2
+  clickMoreThanOnce: 0
+  isPhysical: 1
+  isMagical: 0
 --- !u!114 &7703928875639423708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1756,7 +1833,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0000000018626451, y: -0.27414456}
+  m_Offset: {x: 0, y: -0.2733016}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1767,7 +1844,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.10873127, y: 0.3873971}
+  m_Size: {x: 0.10873127, y: 0.38908303}
   m_EdgeRadius: 0
 --- !u!1 &7703928875690251482
 GameObject:
@@ -1781,7 +1858,6 @@ GameObject:
   - component: {fileID: 7703928875690251302}
   - component: {fileID: 7703928875690251300}
   - component: {fileID: 7703928875690251297}
-  - component: {fileID: 7703928875690251296}
   - component: {fileID: 810214183031661638}
   m_Layer: 0
   m_Name: Head
@@ -1839,10 +1915,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b7b40b71a0b41a0b384943c1038438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoText: 'Bat''s Head: Swing towards your enemy.'
+  energyCost: 5
+  type: Null
+  numTargets: 2
+  nameOfPart: Bat Head
+  attackMinValue: 1
+  attackMaxValue: 3
+  accuracyPercent: 100
+  extraCritPercent: 0
+  infoText: 2 Targets Separate Clicks
   uiObject: {fileID: 0}
   uiInfoText: {fileID: 0}
-  manaBuff: 0
+  uiDamageText: {fileID: 0}
+  uiAccuracyText: {fileID: 0}
+  uiEnergyCostText: {fileID: 0}
+  uiPhysOrMagicText: {fileID: 0}
+  uiTypeText: {fileID: 0}
+  energyBuff: 0
   magicBuff: 0
   magicPenBuff: 0
   attackBuff: 2
@@ -1857,6 +1946,12 @@ MonoBehaviour:
   level: 1
   levelToEvolve: 5
   nextEvolve: {fileID: 0}
+  targetEnemy: 1
+  targetAlly: 0
+  maxIndexToHit: 2
+  clickMoreThanOnce: 1
+  isPhysical: 1
+  isMagical: 0
 --- !u!233 &7703928875690251297
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -1881,36 +1976,6 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: -90
     m_UpperAngle: 90
---- !u!114 &7703928875690251296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7703928875690251482}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4b7b40b71a0b41a0b384943c1038438, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  infoText: 
-  uiObject: {fileID: 0}
-  uiInfoText: {fileID: 0}
-  manaBuff: 0
-  magicBuff: 0
-  magicPenBuff: 0
-  attackBuff: 0
-  attackPenBuff: 0
-  armorBuff: 0
-  magicArmorBuff: 0
-  speedBuff: 0
-  luckBuff: 0
-  healthBuff: 0
-  currentExp: 0
-  expToNextLevel: 5
-  level: 1
-  levelToEvolve: 0
-  nextEvolve: {fileID: 0}
 --- !u!58 &810214183031661638
 CircleCollider2D:
   m_ObjectHideFlags: 0

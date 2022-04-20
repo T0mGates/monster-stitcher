@@ -23,18 +23,20 @@ public class Monster : MonoBehaviour
     private int currentLuck;
     private int maxHealth;
     private int currentHealth;
-    private int currentMana;
-    private int maxMana;
+    private int currentEnergy;
+    private int maxEnergy;
     public Slider hpSlider;
-    public Slider manaSlider;
+    public Slider energySlider;
     public Slider speedSlider;
     public Transform UIStartPos;
+    public List<string> types = new List<string>();
     // Start is called before the first frame update
     void Start()
     {
+        types.Add("Demon");
         ResetStats();
         hpSlider.transform.position = UIStartPos.position;
-        manaSlider.transform.position = UIStartPos.position + new Vector3(0, -0.25f, 0);
+        energySlider.transform.position = UIStartPos.position + new Vector3(0, -0.25f, 0);
         speedSlider.transform.position = UIStartPos.position + new Vector3(0, -0.75f, 0);
     }
 
@@ -44,8 +46,26 @@ public class Monster : MonoBehaviour
         
     }
 
+    public int GetEnergy() { return currentEnergy; }
+
     public void DecreaseSpeed(int amount){
         currentSpeed -= amount;
+        UpdateStatBars();
+    }
+
+    public void IncreaseEnergy(float percentage)
+    {
+        currentEnergy += (int)(energySlider.maxValue * percentage);
+        if(currentEnergy > energySlider.maxValue)
+        {
+            currentEnergy = (int)energySlider.maxValue;
+        }
+        UpdateStatBars();
+    }
+
+    public void DecreaseEnergy(int amount)
+    {
+        currentEnergy -= amount;
         UpdateStatBars();
     }
 
@@ -60,7 +80,7 @@ public class Monster : MonoBehaviour
             maxSpeed += bodypart.speedBuff;
             maxLuck += bodypart.luckBuff;
             maxHealth += bodypart.healthBuff;
-            maxMana += bodypart.manaBuff;
+            maxEnergy += bodypart.energyBuff;
         }
         currentArmor = maxArmor;
         currentMagic = maxMagic;
@@ -71,7 +91,7 @@ public class Monster : MonoBehaviour
         currentSpeed = maxSpeed;
         currentLuck = maxLuck;
         currentHealth = maxHealth;
-        currentMana = maxMana;
+        currentEnergy = maxEnergy;
         UpdateStatBars();
     }
 
@@ -90,12 +110,34 @@ public class Monster : MonoBehaviour
     public void UpdateStatBars(){
         hpSlider.maxValue = maxHealth;
         hpSlider.value = currentHealth;
-        manaSlider.maxValue = maxMana;
-        manaSlider.value = currentMana;
+        energySlider.maxValue = maxEnergy;
+        energySlider.value = currentEnergy;
     }
 
     public float GetSpeedSliderValue()
     {
         return speedSlider.value;
     }
+
+    public void TakeDamage(int amount)
+    {
+        //blabla stuff (anims, red glow)
+        currentHealth -= amount;
+        if(currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            UpdateStatBars();
+        }
+    }
+
+    public int GetLuck() { return currentLuck; }
+    public int GetAttack() { return currentAttack; }
+    public int GetAttackPen() { return currentAttackPen; }
+    public int GetMagic() { return currentMagic; }
+    public int GetMagicPen() { return currentMagicPen; }
+    public int GetArmor() { return currentArmor; }
+    public int GetMagicArmor() { return currentMagicArmor; }
 }
