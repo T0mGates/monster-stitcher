@@ -13,6 +13,8 @@ public class CombatManager : MonoBehaviour
     public GameObject mons2;
     public GameObject mons3;
     public GameObject mons4;
+    public GameObject mons5;
+    public GameObject mons6;
     private List<GameObject> enemyMonsters = new List<GameObject>();
     private List<GameObject> allyMonsters = new List<GameObject>();
     public Transform allyMonsterFrontTransform;
@@ -22,6 +24,8 @@ public class CombatManager : MonoBehaviour
     public Transform enemyMonsterMidTransform;
     public Transform enemyMonsterBackTransform;
     private GameObject currentMonsterTurn;
+    public GameObject turnSprite;
+    public GameObject targetArrow;
     private bool waitingOnClick = false;
     public GameObject cancelButton;
     private GameObject[] gettingHit = new GameObject[3];
@@ -31,7 +35,9 @@ public class CombatManager : MonoBehaviour
     public TextMeshProUGUI uiAccuracyText;
     public TextMeshProUGUI uiEnergyCostText;
     public TextMeshProUGUI uiPhysOrMagicText;
-    public TextMeshProUGUI uiTypeText;
+    public TextMeshProUGUI uiBreedText;
+    public TextMeshProUGUI uiIndexToUseText;
+    public GameObject restButton;
     public bool targetAllyHolder;
     public bool targetEnemyHolder;
     public int numTargetsHolder;
@@ -42,7 +48,7 @@ public class CombatManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartBattle(null, null, mons1, mons2, mons3, mons4);
+        StartBattle(mons1, mons2, mons3, mons4, mons5, mons6);
     }
 
     // Update is called once per frame
@@ -51,6 +57,19 @@ public class CombatManager : MonoBehaviour
         if(state == combatState.IDLE)
         {
             IncrementSpeed();
+        }
+    }
+
+    public void MonsterDied(GameObject mons)
+    {
+        if (allyMonsters.Contains(mons))
+        {
+            allyMonsters.Remove(mons);
+        }
+        else if (enemyMonsters.Contains(mons))
+        {
+            GiveEXP(mons.GetComponent<Monster>().expOnDeath);
+            enemyMonsters.Remove(mons);
         }
     }
 
@@ -100,31 +119,37 @@ public class CombatManager : MonoBehaviour
         if(allyMonsterFront != null){
             GameObject newMonster = Instantiate(allyMonsterFront, allyMonsterFrontTransform);
             allyMonsters.Add(newMonster);
+            newMonster.GetComponent<Monster>().currentIndex = 0;
             allyMonsterFront.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(allyMonsterMid != null){
             GameObject newMonster = Instantiate(allyMonsterMid, allyMonsterMidTransform);
             allyMonsters.Add(newMonster);
+            newMonster.GetComponent<Monster>().currentIndex = 1;
             allyMonsterMid.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(allyMonsterBack != null){
             GameObject newMonster = Instantiate(allyMonsterBack, allyMonsterBackTransform);
             allyMonsters.Add(newMonster);
+            newMonster.GetComponent<Monster>().currentIndex = 2;
             allyMonsterBack.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(enemyMonsterFront != null){
             GameObject newMonster = Instantiate(enemyMonsterFront, enemyMonsterFrontTransform);
             enemyMonsters.Add(newMonster);
+            newMonster.GetComponent<Monster>().currentIndex = 0;
             newMonster.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(enemyMonsterMid != null){
             GameObject newMonster = Instantiate(enemyMonsterMid, enemyMonsterMidTransform);
             enemyMonsters.Add(newMonster);
+            newMonster.GetComponent<Monster>().currentIndex = 1;
             enemyMonsterMid.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         if(enemyMonsterBack != null){
             GameObject newMonster = Instantiate(enemyMonsterBack, enemyMonsterBackTransform);
             enemyMonsters.Add(newMonster);
+            newMonster.GetComponent<Monster>().currentIndex = 2;
             enemyMonsterBack.GetComponent<Monster>().SetSpeedSliderValue(0);
         }
         state = combatState.IDLE;
@@ -132,6 +157,9 @@ public class CombatManager : MonoBehaviour
 
     public IEnumerator StartAllyTurn(GameObject currentMonster){
         state = combatState.ALLY;
+        restButton.SetActive(true);
+        turnSprite.SetActive(true);
+        turnSprite.transform.position = currentMonster.transform.position + new Vector3(0, -0.7f, 0);
         currentMonster.GetComponent<Monster>().IncreaseEnergy(0.2f);
         currentMonsterTurn = currentMonster;
         currentMonster.GetComponent<Monster>().SetSpeedSliderValue(0 + (100 - currentMonster.GetComponent<Monster>().GetSpeedSliderValue()));
@@ -141,10 +169,14 @@ public class CombatManager : MonoBehaviour
 
         }
         state = combatState.IDLE;
+        restButton.SetActive(false);
+        turnSprite.SetActive(false);
     }
     public IEnumerator StartEnemyTurn(GameObject currentMonster)
     {
         state = combatState.ENEMY;
+        turnSprite.SetActive(true);
+        turnSprite.transform.position = currentMonster.transform.position + new Vector3(0, -0.7f, 0);
         currentMonster.GetComponent<Monster>().IncreaseEnergy(0.2f);
         currentMonsterTurn = currentMonster;
         currentMonster.GetComponent<Monster>().SetSpeedSliderValue(0 + (100 - currentMonster.GetComponent<Monster>().GetSpeedSliderValue()));
@@ -154,6 +186,22 @@ public class CombatManager : MonoBehaviour
 
         //}
         state = combatState.IDLE;
+        turnSprite.SetActive(false);
+    }
+
+    public void RestButtonClicked()
+    {
+        targetArrow.SetActive(false);
+        currentMonsterTurn.GetComponent<Monster>().IncreaseEnergy(0.25f);
+        currentMonsterTurn = null;
+        waitingOnClick = false;
+        cancelButton.SetActive(false);
+        restButton.SetActive(false);
+        turnSprite.SetActive(false);
+        for (int i = 0; i < gettingHit.Length; i++)
+        {
+            gettingHit[i] = null;
+        }
     }
 
     public bool ClickedMonsterAbility(GameObject monster)
@@ -174,6 +222,7 @@ public class CombatManager : MonoBehaviour
 
     public void CancelButtonClicked()
     {
+        targetArrow.SetActive(false);
         waitingOnClick = false;
         currentMonsterTurn.GetComponentInChildren<Bodypart>().uiObject.SetActive(false);
         for (int i = 0; i < gettingHit.Length; i++)
@@ -252,6 +301,7 @@ public class CombatManager : MonoBehaviour
                     }
                     if (!clickAgainHolder)
                     {
+                        targetArrow.SetActive(false);
                         Debug.Log("IN attack the different enemies that I chose");
                         currentMonsterTurn = null;
                         bodypartHolder.GetComponent<Bodypart>().UseAttack(gettingHit);
@@ -261,6 +311,11 @@ public class CombatManager : MonoBehaviour
                         {
                             gettingHit[i] = null;
                         }
+                    }
+                    else
+                    {
+                        targetArrow.SetActive(true);
+                        targetArrow.transform.position = gettingHit[0].transform.position + new Vector3(0, 1, 0);
                     }
                 }
             }
@@ -332,6 +387,7 @@ public class CombatManager : MonoBehaviour
                     }
                     if (!clickAgainHolder)
                     {
+                        targetArrow.SetActive(false);
                         Debug.Log("IN attack the different allies that I chose");
                         currentMonsterTurn = null;
                         bodypartHolder.GetComponent<Bodypart>().UseAttack(gettingHit);
@@ -342,8 +398,22 @@ public class CombatManager : MonoBehaviour
                             gettingHit[i] = null;
                         }
                     }
+                    else
+                    {
+                        targetArrow.SetActive(true);
+                        targetArrow.transform.position = gettingHit[0].transform.position + new Vector3(0, 1, 0);
+                    }
                 }
             }
+        }
+    }
+
+    public void GiveEXP(int amount)
+    {
+        //can have huds or whatever
+        foreach(GameObject mons in allyMonsters)
+        {
+            mons.GetComponent<Monster>().GainEXP(amount);
         }
     }
 }

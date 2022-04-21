@@ -954,21 +954,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   energyCost: 1
-  type: Demon
+  breed: Demon
   numTargets: 1
   nameOfPart: Bat Wing
   attackMinValue: 1
   attackMaxValue: 3
   accuracyPercent: 100
   extraCritPercent: 0
-  infoText: 1 target, 1 click.
+  infoText: 1 target, only front
   uiObject: {fileID: 0}
   uiInfoText: {fileID: 0}
   uiDamageText: {fileID: 0}
   uiAccuracyText: {fileID: 0}
   uiEnergyCostText: {fileID: 0}
   uiPhysOrMagicText: {fileID: 0}
-  uiTypeText: {fileID: 0}
+  uiBreedText: {fileID: 0}
+  uiIndexToUseText: {fileID: 0}
   energyBuff: 0
   magicBuff: 0
   magicPenBuff: 0
@@ -990,6 +991,10 @@ MonoBehaviour:
   clickMoreThanOnce: 0
   isPhysical: 1
   isMagical: 0
+  heals: 0
+  minHealValue: 0
+  maxHealValue: 0
+  indexToUse: 000000000100000002000000
 --- !u!70 &3312446496379351868
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1184,7 +1189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   energyCost: 5
-  type: Demon
+  breed: Demon
   numTargets: 2
   nameOfPart: Bat Wing
   attackMinValue: 1
@@ -1198,7 +1203,8 @@ MonoBehaviour:
   uiAccuracyText: {fileID: 0}
   uiEnergyCostText: {fileID: 0}
   uiPhysOrMagicText: {fileID: 0}
-  uiTypeText: {fileID: 0}
+  uiBreedText: {fileID: 0}
+  uiIndexToUseText: {fileID: 0}
   energyBuff: 0
   magicBuff: 0
   magicPenBuff: 0
@@ -1220,6 +1226,10 @@ MonoBehaviour:
   clickMoreThanOnce: 0
   isPhysical: 0
   isMagical: 1
+  heals: 0
+  minHealValue: 0
+  maxHealValue: 0
+  indexToUse: 0000000001000000
 --- !u!70 &3670488123651870276
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1330,7 +1340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   energyCost: 5
-  type: Demon
+  breed: Demon
   numTargets: 3
   nameOfPart: Bat Leg
   attackMinValue: 1
@@ -1344,7 +1354,8 @@ MonoBehaviour:
   uiAccuracyText: {fileID: 0}
   uiEnergyCostText: {fileID: 0}
   uiPhysOrMagicText: {fileID: 0}
-  uiTypeText: {fileID: 0}
+  uiBreedText: {fileID: 0}
+  uiIndexToUseText: {fileID: 0}
   energyBuff: 0
   magicBuff: 0
   magicPenBuff: 0
@@ -1366,6 +1377,10 @@ MonoBehaviour:
   clickMoreThanOnce: 0
   isPhysical: 1
   isMagical: 0
+  heals: 0
+  minHealValue: 0
+  maxHealValue: 0
+  indexToUse: 0100000000000000
 --- !u!61 &5566554750586245901
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1443,13 +1458,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe68c93d430c04e97bb37eda5b867284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  expOnDeath: 11
   currentSpeed: 0
   maxSpeed: 0
   hpSlider: {fileID: 1878590444}
   energySlider: {fileID: 72630206}
   speedSlider: {fileID: 1003658560}
   UIStartPos: {fileID: 4845048718939788878}
-  types: []
+  breeds: []
+  currentIndex: 0
 --- !u!1 &7703928875289892243
 GameObject:
   m_ObjectHideFlags: 0
@@ -1730,7 +1747,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7703928875639423697}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1772,7 +1789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   energyCost: 10
-  type: Demon
+  breed: Demon
   numTargets: 1
   nameOfPart: Bat Body
   attackMinValue: 1
@@ -1786,7 +1803,8 @@ MonoBehaviour:
   uiAccuracyText: {fileID: 0}
   uiEnergyCostText: {fileID: 0}
   uiPhysOrMagicText: {fileID: 0}
-  uiTypeText: {fileID: 0}
+  uiBreedText: {fileID: 0}
+  uiIndexToUseText: {fileID: 0}
   energyBuff: 7
   magicBuff: 0
   magicPenBuff: 0
@@ -1808,6 +1826,10 @@ MonoBehaviour:
   clickMoreThanOnce: 0
   isPhysical: 1
   isMagical: 0
+  heals: 0
+  minHealValue: 0
+  maxHealValue: 0
+  indexToUse: 
 --- !u!114 &7703928875639423708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1916,7 +1938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   energyCost: 5
-  type: Null
+  breed: Demon
   numTargets: 2
   nameOfPart: Bat Head
   attackMinValue: 1
@@ -1930,7 +1952,8 @@ MonoBehaviour:
   uiAccuracyText: {fileID: 0}
   uiEnergyCostText: {fileID: 0}
   uiPhysOrMagicText: {fileID: 0}
-  uiTypeText: {fileID: 0}
+  uiBreedText: {fileID: 0}
+  uiIndexToUseText: {fileID: 0}
   energyBuff: 0
   magicBuff: 0
   magicPenBuff: 0
@@ -1952,6 +1975,10 @@ MonoBehaviour:
   clickMoreThanOnce: 1
   isPhysical: 1
   isMagical: 0
+  heals: 0
+  minHealValue: 0
+  maxHealValue: 0
+  indexToUse: 0200000001000000
 --- !u!233 &7703928875690251297
 HingeJoint2D:
   m_ObjectHideFlags: 0
@@ -2064,7 +2091,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
